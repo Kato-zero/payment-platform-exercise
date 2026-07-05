@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Payment</title>
+    <style>
+        body { font-family: Arial; max-width: 500px; margin: 50px auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #4CAF50; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; }
+        .result { margin-top: 20px; padding: 20px; background: #f0f0f0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h2>Make Payment</h2>
+    <form id="paymentForm">
+        <div class="form-group">
+            <label>Amount (ZMW)</label>
+            <input type="number" id="amount" value="1" required>
+        </div>
+        <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="text" id="accountNumber" value="260972643310" required>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" value="customer@example.com" required>
+        </div>
+        <div class="form-group">
+            <label>Narration</label>
+            <input type="text" id="narration" value="payment for bread">
+        </div>
+        <button type="submit">Pay Now</button>
+    </form>
+    <div id="result" class="result"></div>
+
+    <script>
+        document.getElementById('paymentForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Processing payment...';
+
+            const payload = {
+                amount: parseFloat(document.getElementById('amount').value),
+                accountNumber: document.getElementById('accountNumber').value,
+                email: document.getElementById('email').value,
+                narration: document.getElementById('narration').value,
+                // REPLACE: These URLs should be your actual domain
+                callbackUrl: 'https://your-domain.com/callback',
+                redirectUrl: 'https://your-domain.com/success',
+                backUrl: 'https://your-domain.com/back'
+            };
+
+            try {
+                const response = await fetch('/api/pay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <h3>Payment Initiated</h3>
+                    <p>Reference ID: ${data.referenceId}</p>
+                    <p>Status: ${data.success ? 'Success' : 'Failed'}</p>
+                    <pre>${JSON.stringify(data.data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>
