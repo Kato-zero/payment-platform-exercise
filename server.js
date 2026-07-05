@@ -2,38 +2,65 @@ const express = require('express');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
 const app = express();
+
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public')); // Serve static files from 'public' folder
 
-// Configuration - REPLACE THESE WITH YOUR ACTUAL VALUES
-const API_KEY = process.env.LIPILA_API_KEY; // REPLACE: Get from Lipila dashboard
-const BASE_URL = process.env.LIPILA_BASE_URL;
+// Configuration - REPLACE THESE
+const API_KEY = process.env.LIPILA_API_KEY; // REPLACE: Your Lipila API key
+const BASE_URL = process.env.LIPILA_BASE_URL || 'https://api.lipila.dev/api/v1';
 
-// Payment endpoint
+// Serve the HTML page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Payment endpoint - POST method
 app.post('/api/pay', async (req, res) => {
+    console.log('Payment request received:', req.body);
+    
     try {
-        // REPLACE: These should come from your frontend or request body
+        // Get values from request body or use defaults
         const {
-            amount = 1,                    // REPLACE: Get from user input
-            accountNumber = '260972643310', // REPLACE: Customer's mobile number
-            narration = 'payment for bread', // REPLACE: Description
-            email = 'customer@email.com',   // REPLACE: Customer's email
-            callbackUrl = 'https://your-domain.com/callback', // REPLACE: Your callback URL
-            redirectUrl = 'https://your-domain.com/success',  // REPLACE: Success redirect
-            backUrl = 'https://your-domain.com/back'          // REPLACE: Back button URL
+            amount = 1,
+            accountNumber = '260972643310',
+            narration = 'payment for bread',
+            email = 'customer@example.com',
+            callbackUrl = 'https://your-domain.com/callback', // REPLACE: Your domain
+            redirectUrl = 'https://your-domain.com/success',  // REPLACE: Your domain
+            backUrl = 'https://your-domain.com/back'          // REPLACE: Your domain
         } = req.body;
+
+        // Validate required fields
+        if (!amount || amount <= 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Amount is required and must be greater than 0'
+            });
+        }
+
+        if (!accountNumber) {
+            return res.status(400).json({
+                success: false,
+                error: 'Account number is required'
+            });
+        }
 
         // Generate unique reference ID
         const referenceId = uuidv4();
 
-        // Prepare the request payload
+        // Prepare the payload
         const payload = {
             callbackUrl: callbackUrl,
             referenceId: referenceId,
-            amount: amount,
+            amount: parseFloat(amount),
             narration: narration,
             accountNumber: accountNumber,
             currency: 'ZMW',
@@ -41,6 +68,8 @@ app.post('/api/pay', async (req, res) => {
             redirectUrl: redirectUrl,
             email: email
         };
+
+        console.log('Sending payload to Lipila:', payload);
 
         // Make the API call to Lipila
         const response = await axios.post(
@@ -55,38 +84,50 @@ app.post('/api/pay', async (req, res) => {
             }
         );
 
+        console.log('Lipila response:', response.data);
+
         // Return success response
         res.json({
             success: true,
             data: response.data,
-            referenceId: referenceId
+            referenceId: referenceId,
+            message: 'Payment initiated successfully'
         });
 
     } catch (error) {
-        console.error('Payment error:', error.response?.data || error.message);
-        res.status(500).json({
+        console.error('Payment error details:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        
+        // Return detailed error
+        res.status(error.response?.status || 500).json({
             success: false,
-            error: error.response?.data || error.message
+            error: error.response?.data?.message || error.message,
+            details: error.response?.data || null
         });
     }
 });
 
-// Callback endpoint - Lipila will send payment status here
+// Callback endpoint - Lipila sends payment status here
 app.post('/callback', async (req, res) => {
     try {
-        // REPLACE: Process the payment callback from Lipila
         const callbackData = req.body;
         console.log('Payment callback received:', callbackData);
 
-        // REPLACE: Update your database with payment status
-        // Example: 
-        // await db.updatePaymentStatus(callbackData.referenceId, callbackData.status);
+        // REPLACE: Add your database logic here
+        // Example: Update payment status in your database
+        // await db.collection('payments').updateOne(
+        //     { referenceId: callbackData.referenceId },
+        //     { $set: { status: callbackData.status, updatedAt: new Date() } }
+        // );
 
-        // Always respond with 200 to acknowledge receipt
-        res.status(200).send('OK');
+        // Always respond with 200 to acknowledge
+        res.status(200).json({ status: 'received' });
     } catch (error) {
         console.error('Callback error:', error);
-        res.status(500).send('Error processing callback');
+        res.status(500).json({ error: 'Error processing callback' });
     }
 });
 
@@ -95,11 +136,11 @@ app.get('/api/payment-status/:referenceId', async (req, res) => {
     try {
         const { referenceId } = req.params;
         
-        // REPLACE: Check status from your database
-        // For now, we'll return a mock response
+        // REPLACE: Get status from your database
+        // For demo, return mock status
         res.json({
             referenceId: referenceId,
-            status: 'pending', // REPLACE: Get from database
+            status: 'pending',
             message: 'Payment status retrieved'
         });
     } catch (error) {
@@ -109,7 +150,13 @@ app.get('/api/payment-status/:referenceId', async (req, res) => {
     }
 });
 
+// Handle favicon request (to avoid 404)
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end();
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Payment server running on port ${PORT}`);
+    console.log(`✅ Payment server running on http://localhost:${PORT}`);
+    console.log(`📝 Open http://localhost:${PORT} in your browser`);
 });
