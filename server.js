@@ -15,7 +15,7 @@ app.use(express.static('public')); // Serve static files from 'public' folder
 
 // Configuration - REPLACE THESE
 const API_KEY = process.env.LIPILA_API_KEY; // REPLACE: Your Lipila API key
-const BASE_URL = process.env.LIPILA_BASE_URL || 'https://api.lipila.dev/api/v1';
+const BASE_URL = process.env.LIPILA_BASE_URL || 'https://api.lipila.dev/api/v1/collections/mobile-money';
 
 // Serve the HTML page
 app.get('/', (req, res) => {
@@ -33,9 +33,9 @@ app.post('/api/pay', async (req, res) => {
             accountNumber = '260972643310',
             narration = 'payment for bread',
             email = 'customer@example.com',
-            callbackUrl = 'https://your-domain.com/callback', // REPLACE: Your domain
-            redirectUrl = 'https://your-domain.com/success',  // REPLACE: Your domain
-            backUrl = 'https://your-domain.com/back'          // REPLACE: Your domain
+            callbackUrl = 'https://kato-zero.github.io/payment-platform-exercise/', // REPLACE: Your domain
+            redirectUrl = 'https://kato-zero.github.io/payment-platform-exercise/',  // REPLACE: Your domain
+            backUrl = 'https://kato-zero.github.io/payment-platform-exercise/'          // REPLACE: Your domain
         } = req.body;
 
         // Validate required fields
