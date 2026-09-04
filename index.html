@@ -1,270 +1,2433 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Simple Payment System</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 28px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-        button:active {
-            transform: translateY(0);
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        #result {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
-            background: #f8f9fa;
-            display: none;
-        }
-        #result.show {
-            display: block;
-        }
-        #result.success {
-            border-left: 4px solid #28a745;
-        }
-        #result.error {
-            border-left: 4px solid #dc3545;
-        }
-        #result.loading {
-            border-left: 4px solid #ffc107;
-        }
-        .result-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .result-content {
-            font-size: 14px;
-            color: #555;
-            word-break: break-all;
-            white-space: pre-wrap;
-        }
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .note {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3cd;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #856404;
-        }
-        .note strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+
+<title>CMK Web Solutions | Premium Access</title>
+
+<meta
+    name="description"
+    content="Unlock premium access securely with mobile money."
+>
+
+<style>
+:root {
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --text: #17202a;
+    --muted: #667085;
+    --line: #e7eaf0;
+    --dark: #111827;
+    --dark-hover: #000000;
+
+    --green: #027a48;
+    --green-bg: #ecfdf3;
+
+    --red: #b42318;
+    --red-bg: #fff1f2;
+
+    --amber: #b54708;
+    --amber-bg: #fffaeb;
+
+    --radius: 18px;
+    --shadow: 0 18px 55px rgba(16, 24, 40, 0.10);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(17, 24, 39, 0.06),
+            transparent 30%
+        ),
+        var(--bg);
+
+    color: var(--text);
+
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.page {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 34px 18px 50px;
+}
+
+.app {
+    width: 100%;
+    max-width: 460px;
+}
+
+.card {
+    background: var(--card);
+
+    border: 1px solid rgba(16, 24, 40, 0.05);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+
+    margin-bottom: 18px;
+}
+
+.header {
+    position: relative;
+
+    padding: 28px 26px 22px;
+
+    text-align: center;
+
+    border-bottom: 1px solid var(--line);
+}
+
+.logo {
+    width: 56px;
+    height: 56px;
+
+    border-radius: 16px;
+
+    display: grid;
+    place-items: center;
+
+    margin: 0 auto 13px;
+
+    background: var(--dark);
+    color: #fff;
+
+    font-size: 18px;
+    font-weight: 850;
+
+    letter-spacing: -0.02em;
+
+    box-shadow:
+        0 10px 24px rgba(17, 24, 39, 0.16);
+}
+
+.business-name {
+    font-size: 20px;
+    line-height: 1.25;
+
+    font-weight: 800;
+
+    letter-spacing: -0.02em;
+
+    margin-bottom: 5px;
+}
+
+.secure {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.content {
+    padding: 24px;
+}
+
+.section-title {
+    font-size: 13px;
+
+    font-weight: 800;
+
+    color: #344054;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+
+    margin-bottom: 11px;
+}
+
+.feature-list {
+    list-style: none;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+.feature-list li {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-height: 48px;
+
+    padding: 12px 14px;
+
+    border-radius: 11px;
+
+    background: #f8fafc;
+
+    border: 1px solid #eef1f5;
+
+    font-size: 14px;
+}
+
+.feature-icon {
+    width: 24px;
+    height: 24px;
+
+    flex: 0 0 24px;
+
+    border-radius: 50%;
+
+    display: grid;
+    place-items: center;
+
+    background: #edf1f5;
+
+    color: #344054;
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+.divider {
+    height: 1px;
+
+    background: var(--line);
+
+    margin: 22px 0;
+}
+
+/* PREMIUM */
+
+.premium-badge {
+    display: none;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 13px;
+
+    padding: 10px 12px;
+
+    border: 1px solid #abefc6;
+
+    border-radius: 10px;
+
+    background: var(--green-bg);
+
+    color: var(--green);
+
+    font-size: 13px;
+
+    font-weight: 750;
+}
+
+.premium-badge.visible {
+    display: flex;
+}
+
+.countdown-pill {
+    margin-left: auto;
+
+    font-variant-numeric: tabular-nums;
+
+    white-space: nowrap;
+}
+
+.premium-block {
+    position: relative;
+}
+
+.premium-block.locked .feature-list li {
+    filter: blur(3.5px);
+
+    user-select: none;
+
+    pointer-events: none;
+}
+
+.lock-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 18px;
+
+    text-align: center;
+
+    border-radius: 11px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    backdrop-filter: blur(1px);
+}
+
+.premium-block.unlocked .lock-overlay {
+    display: none;
+}
+
+.lock-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--dark);
+
+    color: #fff;
+
+    font-size: 17px;
+}
+
+.lock-text {
+    max-width: 270px;
+
+    color: #475467;
+
+    font-size: 13.5px;
+
+    line-height: 1.45;
+}
+
+/* BUTTONS */
+
+.primary-button,
+.unlock-button {
+    width: 100%;
+
+    min-height: 50px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    padding: 12px 16px;
+
+    background: var(--dark);
+
+    color: #fff;
+
+    cursor: pointer;
+
+    font-size: 14.5px;
+
+    font-weight: 800;
+
+    transition:
+        transform .15s ease,
+        background .15s ease,
+        opacity .15s ease;
+}
+
+.unlock-button {
+    width: auto;
+
+    min-height: 42px;
+
+    padding: 10px 17px;
+
+    font-size: 13.5px;
+}
+
+.primary-button:hover,
+.unlock-button:hover {
+    background: var(--dark-hover);
+}
+
+.primary-button:active,
+.unlock-button:active {
+    transform: translateY(1px);
+}
+
+.primary-button:disabled {
+    opacity: .60;
+
+    cursor: not-allowed;
+}
+
+/* CHECKOUT */
+
+.checkout-card {
+    animation: rise .25s ease;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+.plan-price {
+    text-align: center;
+
+    margin-bottom: 23px;
+}
+
+.price-line {
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: center;
+
+    gap: 6px;
+}
+
+.plan-price .amount {
+    font-size: 34px;
+
+    line-height: 1;
+
+    font-weight: 850;
+
+    letter-spacing: -0.04em;
+}
+
+.plan-price .period {
+    font-size: 13px;
+
+    color: var(--muted);
+}
+
+.plan-note {
+    margin-top: 8px;
+
+    color: var(--muted);
+
+    font-size: 12.5px;
+}
+
+/* FORM */
+
+.field {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13.5px;
+
+    font-weight: 700;
+}
+
+input {
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    background: #fff;
+
+    color: var(--text);
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color .15s ease,
+        box-shadow .15s ease;
+}
+
+input::placeholder {
+    color: #98a2b3;
+}
+
+input:focus {
+    border-color: var(--dark);
+
+    box-shadow:
+        0 0 0 3px rgba(17, 24, 39, .08);
+}
+
+input:disabled {
+    background: #f9fafb;
+
+    cursor: not-allowed;
+}
+
+.phone-wrapper {
+    display: flex;
+
+    gap: 8px;
+}
+
+.country {
+    width: 78px;
+
+    height: 48px;
+
+    flex: 0 0 78px;
+
+    display: grid;
+
+    place-items: center;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    background: #f9fafb;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+.phone-wrapper input {
+    min-width: 0;
+}
+
+.helper {
+    margin-top: 7px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+/* STATUS */
+
+.status {
+    display: none;
+
+    margin-top: 15px;
+
+    padding: 13px 14px;
+
+    border-radius: 10px;
+
+    font-size: 13.5px;
+
+    line-height: 1.5;
+}
+
+.status.loading {
+    display: block;
+
+    background: #f2f4f7;
+
+    color: #344054;
+}
+
+.status.error {
+    display: block;
+
+    background: var(--red-bg);
+
+    color: var(--red);
+}
+
+.status.success {
+    display: block;
+
+    background: var(--green-bg);
+
+    color: var(--green);
+}
+
+.status.warning {
+    display: block;
+
+    background: var(--amber-bg);
+
+    color: var(--amber);
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+
+    display: inline-block;
+
+    vertical-align: -3px;
+
+    margin-right: 8px;
+
+    border: 2px solid #d0d5dd;
+
+    border-top-color: var(--dark);
+
+    border-radius: 50%;
+
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.checkout-actions {
+    margin-top: 14px;
+
+    text-align: center;
+}
+
+.text-button {
+    border: 0;
+
+    background: transparent;
+
+    color: #667085;
+
+    cursor: pointer;
+
+    padding: 8px 10px;
+
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+.text-button:hover {
+    color: var(--dark);
+}
+
+/* RESULT */
+
+.result-screen {
+    padding: 34px 24px 30px;
+
+    text-align: center;
+}
+
+.result-icon {
+    width: 66px;
+    height: 66px;
+
+    display: grid;
+
+    place-items: center;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    font-weight: 850;
+}
+
+.result-icon.success {
+    background: var(--green-bg);
+
+    color: #039855;
+}
+
+.result-icon.failed {
+    background: var(--red-bg);
+
+    color: var(--red);
+}
+
+.result-icon.waiting {
+    background: #f2f4f7;
+
+    color: #344054;
+}
+
+.result-screen h2 {
+    margin-bottom: 8px;
+
+    font-size: 21px;
+
+    letter-spacing: -0.02em;
+}
+
+.result-screen p {
+    color: var(--muted);
+
+    line-height: 1.55;
+
+    font-size: 14px;
+}
+
+.result-reference {
+    margin-top: 13px;
+
+    color: #98a2b3;
+
+    font-size: 11.5px;
+
+    overflow-wrap: anywhere;
+}
+
+.result-buttons {
+    display: grid;
+
+    gap: 9px;
+
+    margin-top: 22px;
+}
+
+.secondary-button {
+    width: 100%;
+
+    min-height: 46px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    background: #fff;
+
+    color: #344054;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: 750;
+}
+
+.secondary-button:hover {
+    background: #f9fafb;
+}
+
+/* SECURITY */
+
+.security-note {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 9px;
+
+    margin-top: 18px;
+
+    color: #667085;
+
+    font-size: 11.5px;
+
+    line-height: 1.45;
+}
+
+/* FOOTER */
+
+.footer-note {
+    padding: 4px 10px 0;
+
+    text-align: center;
+
+    color: #98a2b3;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* MOBILE */
+
+@media (max-width: 520px) {
+
+    .page {
+        padding: 18px 12px 34px;
+    }
+
+    .header {
+        padding: 24px 20px 19px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .card {
+        border-radius: 16px;
+    }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        scroll-behavior: auto !important;
+
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <h2>💳 Make Payment</h2>
-        
-        <form id="paymentForm">
-            <div class="form-group">
-                <label for="amount">Amount (ZMW)</label>
-                <input type="number" id="amount" value="1" min="0.01" step="0.01" required>
+
+<main class="page">
+
+    <div class="app">
+
+        <!-- =========================================================
+             MAIN PREMIUM CARD
+        ========================================================== -->
+
+        <section
+            class="card"
+            aria-labelledby="mainTitle"
+        >
+
+            <header class="header">
+
+                <div
+                    class="logo"
+                    aria-hidden="true"
+                >
+                    CMK
+                </div>
+
+                <div
+                    class="business-name"
+                    id="mainTitle"
+                >
+                    CMK Web Solutions
+                </div>
+
+                <div class="secure">
+                    Free & Premium access
+                </div>
+
+            </header>
+
+
+            <div class="content">
+
+                <!-- FREE -->
+
+                <div class="section-title">
+                    Free features
+                </div>
+
+                <ul class="feature-list">
+
+                    <li>
+                        <span
+                            class="feature-icon"
+                            aria-hidden="true"
+                        >
+                            ✓
+                        </span>
+
+                        <span>
+                            Basic dashboard access
+                        </span>
+                    </li>
+
+
+                    <li>
+                        <span
+                            class="feature-icon"
+                            aria-hidden="true"
+                        >
+                            ✓
+                        </span>
+
+                        <span>
+                            Up to 5 saved items
+                        </span>
+                    </li>
+
+
+                    <li>
+                        <span
+                            class="feature-icon"
+                            aria-hidden="true"
+                        >
+                            ✓
+                        </span>
+
+                        <span>
+                            Standard support
+                        </span>
+                    </li>
+
+                </ul>
+
+
+                <div class="divider"></div>
+
+
+                <!-- PREMIUM ACTIVE BADGE -->
+
+                <div
+                    class="premium-badge"
+                    id="premiumBadge"
+                    role="status"
+                >
+
+                    <span aria-hidden="true">
+                        🔓
+                    </span>
+
+                    <span>
+                        Premium active
+                    </span>
+
+                    <span
+                        class="countdown-pill"
+                        id="countdown"
+                    >
+                        2:00
+                    </span>
+
+                </div>
+
+
+                <!-- PREMIUM -->
+
+                <div class="section-title">
+                    Premium features
+                </div>
+
+
+                <div
+                    class="premium-block locked"
+                    id="premiumBlock"
+                >
+
+                    <ul class="feature-list">
+
+                        <li>
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
+                                ★
+                            </span>
+
+                            <span>
+                                Unlimited saved items
+                            </span>
+                        </li>
+
+
+                        <li>
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
+                                ★
+                            </span>
+
+                            <span>
+                                Priority support
+                            </span>
+                        </li>
+
+
+                        <li>
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
+                                ★
+                            </span>
+
+                            <span>
+                                Advanced analytics
+                            </span>
+                        </li>
+
+
+                        <li>
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
+                                ★
+                            </span>
+
+                            <span>
+                                Export to PDF / Excel
+                            </span>
+                        </li>
+
+                    </ul>
+
+
+                    <div
+                        class="lock-overlay"
+                        id="lockOverlay"
+                    >
+
+                        <div
+                            class="lock-icon"
+                            aria-hidden="true"
+                        >
+                            🔒
+                        </div>
+
+                        <div
+                            class="lock-text"
+                            id="lockText"
+                        >
+                            Unlock premium for 2 minutes
+                            with a K5.00 mobile money payment.
+                        </div>
+
+                        <button
+                            type="button"
+                            class="unlock-button"
+                            id="openCheckoutBtn"
+                        >
+                            Unlock Premium — K5.00
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
-            
-            <div class="form-group">
-                <label for="accountNumber">Mobile Number</label>
-                <input type="text" id="accountNumber" value="260972643310" placeholder="260XXXXXXXXX" required>
+
+        </section>
+
+
+        <!-- =========================================================
+             CHECKOUT CARD
+        ========================================================== -->
+
+        <section
+            class="card checkout-card hidden"
+            id="checkoutCard"
+            aria-labelledby="checkoutTitle"
+        >
+
+            <header class="header">
+
+                <div
+                    class="logo"
+                    aria-hidden="true"
+                >
+                    CMK
+                </div>
+
+                <div
+                    class="business-name"
+                    id="checkoutTitle"
+                >
+                    Unlock Premium
+                </div>
+
+                <div class="secure">
+                    Secure mobile money payment
+                </div>
+
+            </header>
+
+
+            <!-- CHECKOUT -->
+
+            <div
+                class="content"
+                id="checkoutContent"
+            >
+
+                <div class="plan-price">
+
+                    <div class="price-line">
+
+                        <span
+                            class="amount"
+                            id="displayAmount"
+                        >
+                            K5.00
+                        </span>
+
+                        <span
+                            class="period"
+                            id="displayPeriod"
+                        >
+                            / 2 mins access
+                        </span>
+
+                    </div>
+
+
+                    <div class="plan-note">
+                        Approve the payment prompt on your
+                        phone to unlock premium.
+                    </div>
+
+                </div>
+
+
+                <!-- FORM -->
+
+                <form
+                    id="paymentForm"
+                    novalidate
+                >
+
+                    <!-- NAME -->
+
+                    <div class="field">
+
+                        <label for="name">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            maxlength="80"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="field">
+
+                        <label for="phone">
+                            Mobile money number
+                        </label>
+
+
+                        <div class="phone-wrapper">
+
+                            <div
+                                class="country"
+                                aria-hidden="true"
+                            >
+                                +260
+                            </div>
+
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="97 123 4567"
+                                inputmode="numeric"
+                                autocomplete="tel"
+                                maxlength="14"
+                                aria-describedby="phoneHelp"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div
+                            class="helper"
+                            id="phoneHelp"
+                        >
+                            Enter the 9 digits after +260.
+                        </div>
+
+                    </div>
+
+
+                    <!-- PAY -->
+
+                    <button
+                        type="submit"
+                        id="payButton"
+                        class="primary-button"
+                    >
+                        Pay K5.00
+                    </button>
+
+                </form>
+
+
+                <!-- STATUS -->
+
+                <div
+                    id="status"
+                    class="status"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                ></div>
+
+
+                <!-- SECURITY -->
+
+                <div class="security-note">
+
+                    <span aria-hidden="true">
+                        🔒
+                    </span>
+
+                    <span>
+                        Payment is processed through the server.
+                        Never place your Lipila API secret inside
+                        this HTML file.
+                    </span>
+
+                </div>
+
+
+                <!-- CANCEL -->
+
+                <div class="checkout-actions">
+
+                    <button
+                        type="button"
+                        class="text-button"
+                        id="cancelCheckoutBtn"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
             </div>
-            
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" value="customer@example.com" required>
+
+
+            <!-- =====================================================
+                 PAYMENT RESULT
+            ====================================================== -->
+
+            <div
+                class="result-screen hidden"
+                id="resultScreen"
+                aria-live="polite"
+            >
+
+                <div
+                    class="result-icon success"
+                    id="resultIcon"
+                    aria-hidden="true"
+                >
+                    ✓
+                </div>
+
+
+                <h2 id="resultTitle">
+                    Payment successful
+                </h2>
+
+
+                <p id="resultMessage">
+                    Premium access has been unlocked.
+                </p>
+
+
+                <div
+                    class="result-reference hidden"
+                    id="resultReference"
+                ></div>
+
+
+                <div class="result-buttons">
+
+                    <button
+                        type="button"
+                        class="primary-button hidden"
+                        id="retryPaymentBtn"
+                    >
+                        Try Again
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="closeResultBtn"
+                    >
+                        Close
+                    </button>
+
+                </div>
+
             </div>
-            
-            <div class="form-group">
-                <label for="narration">Description</label>
-                <input type="text" id="narration" value="payment for bread" placeholder="What's this payment for?">
-            </div>
-            
-            <button type="submit" id="payButton">
-                <span id="buttonText">Pay Now</span>
-            </button>
-        </form>
-        
-        <div id="result">
-            <div class="result-title" id="resultTitle"></div>
-            <div class="result-content" id="resultContent"></div>
+
+        </section>
+
+
+        <div class="footer-note">
+            CMK Web Solutions · Mobile money premium access
         </div>
 
-        <div class="note">
-            <strong>⚠️ Important:</strong>
-            <span id="configNote">Replace the callback URLs in the code with your actual domain</span>
-        </div>
     </div>
 
-    <script>
-        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const resultDiv = document.getElementById('result');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultContent = document.getElementById('resultContent');
-            const payButton = document.getElementById('payButton');
-            const buttonText = document.getElementById('buttonText');
+</main>
 
-            // Show loading state
-            resultDiv.className = 'show loading';
-            resultTitle.innerHTML = '<span class="spinner"></span> Processing payment...';
-            resultContent.textContent = 'Please wait...';
-            payButton.disabled = true;
-            buttonText.textContent = 'Processing...';
+<!-- Lightweight QR code generator (renders to a <canvas>, used only for the downloadable ticket) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-            // Get form values
-            const payload = {
-                amount: parseFloat(document.getElementById('amount').value),
-                accountNumber: document.getElementById('accountNumber').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                narration: document.getElementById('narration').value.trim() || 'payment',
-                // REPLACE: These URLs should be your actual domain
-                callbackUrl: 'https://your-domain.com/callback',
-                redirectUrl: 'https://your-domain.com/success',
-                backUrl: 'https://your-domain.com/back'
-            };
+<script>
+"use strict";
 
-            // Validate
-            if (!payload.accountNumber) {
-                resultDiv.className = 'show error';
-                resultTitle.textContent = '❌ Validation Error';
-                resultContent.textContent = 'Please enter a mobile number';
-                payButton.disabled = false;
-                buttonText.textContent = 'Pay Now';
-                return;
-            }
+const CONFIG = {
+    PRICE: 5,
+    TICKET_EVENT: "CMK Web Solutions Premium Access",
+    PREMIUM_MS: 2 * 60 * 1000
+};
 
-            if (payload.amount <= 0) {
-                resultDiv.className = 'show error';
-                resultTitle.textContent = '❌ Validation Error';
-                resultContent.textContent = 'Please enter a valid amount';
-                payButton.disabled = false;
-                buttonText.textContent = 'Pay Now';
-                return;
-            }
+const premiumBlock = document.getElementById("premiumBlock");
+const premiumBadge = document.getElementById("premiumBadge");
+const countdownEl = document.getElementById("countdown");
 
-            try {
-                console.log('Sending payment request:', payload);
-                
-                const response = await fetch('/api/pay', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
+const openCheckoutBtn = document.getElementById("openCheckoutBtn");
+const checkoutCard = document.getElementById("checkoutCard");
+const checkoutContent = document.getElementById("checkoutContent");
+const resultScreen = document.getElementById("resultScreen");
 
-                console.log('Response status:', response.status);
-                
-                const data = await response.json();
-                console.log('Response data:', data);
+const form = document.getElementById("paymentForm");
+const nameInput = document.getElementById("name");
+const phoneInput = document.getElementById("phone");
+const payButton = document.getElementById("payButton");
 
-                if (response.ok && data.success) {
-                    resultDiv.className = 'show success';
-                    resultTitle.textContent = '✅ Payment Initiated Successfully!';
-                    resultContent.textContent = JSON.stringify({
-                        referenceId: data.referenceId,
-                        status: 'Pending',
-                        message: data.message || 'Waiting for payment confirmation',
-                        details: data.data
-                    }, null, 2);
-                } else {
-                    throw new Error(data.error || data.message || 'Payment failed');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                resultDiv.className = 'show error';
-                resultTitle.textContent = '❌ Payment Failed';
-                resultContent.textContent = error.message || 'An unexpected error occurred. Please try again.';
-            } finally {
-                payButton.disabled = false;
-                buttonText.textContent = 'Pay Now';
-            }
+const statusBox = document.getElementById("status");
+const cancelCheckoutBtn = document.getElementById("cancelCheckoutBtn");
+
+const retryPaymentBtn = document.getElementById("retryPaymentBtn");
+const closeResultBtn = document.getElementById("closeResultBtn");
+
+const resultIcon = document.getElementById("resultIcon");
+const resultTitle = document.getElementById("resultTitle");
+const resultMessage = document.getElementById("resultMessage");
+const resultReference = document.getElementById("resultReference");
+
+const displayAmount = document.getElementById("displayAmount");
+const displayPeriod = document.getElementById("displayPeriod");
+const lockText = document.getElementById("lockText");
+
+let countdownTimer = null;
+let premiumTimer = null;
+let isSubmitting = false;
+
+
+/* --------------------------------
+   INITIAL UI
+-------------------------------- */
+
+displayAmount.textContent = formatMoney(CONFIG.PRICE);
+displayPeriod.textContent = "/ 2 mins access";
+
+lockText.textContent =
+    "Unlock premium for 2 mins with a K5.00 mobile money payment.";
+
+openCheckoutBtn.textContent =
+    "Unlock Premium — K5.00";
+
+payButton.textContent =
+    "Pay K5.00";
+
+
+/* --------------------------------
+   OPEN CHECKOUT
+-------------------------------- */
+
+openCheckoutBtn.addEventListener("click", () => {
+
+    checkoutCard.classList.remove("hidden");
+
+    checkoutContent.classList.remove("hidden");
+
+    resultScreen.classList.add("hidden");
+
+    clearStatus();
+
+    setSubmitting(false);
+
+    checkoutCard.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    setTimeout(() => {
+        nameInput.focus();
+    }, 300);
+
+});
+
+
+/* --------------------------------
+   CANCEL
+-------------------------------- */
+
+cancelCheckoutBtn.addEventListener("click", () => {
+
+    if (isSubmitting) {
+        return;
+    }
+
+    closeCheckout();
+
+});
+
+
+closeResultBtn.addEventListener("click", () => {
+
+    closeCheckout();
+
+});
+
+
+function closeCheckout() {
+
+    checkoutCard.classList.add("hidden");
+
+    checkoutContent.classList.remove("hidden");
+
+    resultScreen.classList.add("hidden");
+
+    clearStatus();
+
+    setSubmitting(false);
+
+}
+
+
+/* --------------------------------
+   PHONE FORMATTING
+-------------------------------- */
+
+phoneInput.addEventListener("input", () => {
+
+    let digits = phoneInput.value.replace(/\D/g, "");
+
+    if (digits.startsWith("260")) {
+        digits = digits.substring(3);
+    }
+
+    if (digits.startsWith("0") && digits.length === 10) {
+        digits = digits.substring(1);
+    }
+
+    digits = digits.substring(0, 9);
+
+    const parts = [];
+
+    if (digits.length > 0) {
+        parts.push(digits.substring(0, 2));
+    }
+
+    if (digits.length > 2) {
+        parts.push(digits.substring(2, 5));
+    }
+
+    if (digits.length > 5) {
+        parts.push(digits.substring(5, 9));
+    }
+
+    phoneInput.value = parts.join(" ");
+
+});
+
+
+/* --------------------------------
+   PAYMENT FORM
+-------------------------------- */
+
+form.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    if (isSubmitting) {
+        return;
+    }
+
+    clearStatus();
+
+    const name = nameInput.value.trim();
+
+    const phone = normalizeZambianPhone(
+        phoneInput.value
+    );
+
+
+    if (name.length < 2) {
+
+        showStatus(
+            "error",
+            "Please enter your full name."
+        );
+
+        nameInput.focus();
+
+        return;
+    }
+
+
+    if (!phone) {
+
+        showStatus(
+            "error",
+            "Please enter a valid Zambian mobile number."
+        );
+
+        phoneInput.focus();
+
+        return;
+    }
+
+
+    /*
+        SIMULATION STARTS HERE
+    */
+
+    setSubmitting(true);
+
+    showStatus(
+        "loading",
+        "Creating your payment request..."
+    );
+
+
+    await wait(1800);
+
+
+    showStatus(
+        "loading",
+        "Processing mobile money payment..."
+    );
+
+
+    await wait(2200);
+
+
+    showStatus(
+        "loading",
+        "Confirming payment..."
+    );
+
+
+    await wait(1800);
+
+
+    /*
+        SIMULATED SUCCESS
+    */
+
+    const referenceId =
+        generateReference();
+
+
+    setSubmitting(false);
+
+
+    showPaymentSuccessful(
+        name,
+        phone,
+        referenceId
+    );
+
+});
+
+
+/* --------------------------------
+   SIMULATED SUCCESS
+-------------------------------- */
+
+function showPaymentSuccessful(
+    name,
+    phone,
+    referenceId
+) {
+
+    activatePremium();
+
+
+    showResult({
+
+        type: "success",
+
+        icon: "✓",
+
+        title: "Payment successful",
+
+        message:
+            "Your K5.00 payment has been confirmed. " +
+            "Your premium ticket is downloading automatically.",
+
+        referenceId: referenceId,
+
+        retry: false
+
+    });
+
+
+    /*
+        Automatically generate and download ticket
+    */
+
+    setTimeout(() => {
+
+        downloadTicket({
+            name: name,
+            phone: phone,
+            referenceId: referenceId
         });
-    </script>
+
+    }, 700);
+
+}
+
+
+/* --------------------------------
+   GENERATE TICKET REFERENCE
+-------------------------------- */
+
+function generateReference() {
+
+    const now = Date.now();
+
+    const random =
+        Math.floor(
+            100000 +
+            Math.random() * 900000
+        );
+
+    return "CMK-" + now + "-" + random;
+
+}
+
+
+/* --------------------------------
+   BUILD & DOWNLOAD TICKET (PNG)
+-------------------------------- */
+
+function downloadTicket({ name, phone, referenceId }) {
+
+    const purchaseDate =
+        new Date().toLocaleString(
+            "en-ZM",
+            { dateStyle: "medium", timeStyle: "short" }
+        );
+
+    const expiresAt =
+        new Date(Date.now() + CONFIG.PREMIUM_MS)
+            .toLocaleTimeString(
+                "en-ZM",
+                { hour: "2-digit", minute: "2-digit" }
+            );
+
+    renderTicketPNG({
+        name,
+        phone,
+        referenceId,
+        purchaseDate,
+        expiresAt
+    });
+
+}
+
+
+/*
+    Renders a QR code for the reference number (via QRCode.js,
+    which draws to an offscreen <canvas>), then hands the
+    resulting image off to the ticket canvas builder. Falls
+    back gracefully to a ticket with no QR code if the QR
+    library failed to load (e.g. offline).
+*/
+function renderTicketPNG(data) {
+
+    let qrDataUrl = null;
+
+    try {
+
+        if (typeof QRCode !== "undefined") {
+
+            const holder = document.createElement("div");
+
+            holder.style.position = "fixed";
+            holder.style.left = "-9999px";
+            holder.style.top = "-9999px";
+
+            document.body.appendChild(holder);
+
+            new QRCode(holder, {
+                text: data.referenceId,
+                width: 300,
+                height: 300,
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            const qrCanvas = holder.querySelector("canvas");
+
+            if (qrCanvas) {
+                qrDataUrl = qrCanvas.toDataURL("image/png");
+            }
+
+            document.body.removeChild(holder);
+
+        }
+
+    } catch (err) {
+
+        qrDataUrl = null;
+
+    }
+
+    if (qrDataUrl) {
+
+        const qrImg = new Image();
+
+        qrImg.onload = () => buildTicketCanvas(data, qrImg);
+        qrImg.onerror = () => buildTicketCanvas(data, null);
+
+        qrImg.src = qrDataUrl;
+
+    } else {
+
+        buildTicketCanvas(data, null);
+
+    }
+
+}
+
+
+function buildTicketCanvas(data, qrImg) {
+
+    const scale = 2;
+
+    const w = 430;
+    const h = 720;
+    const r = 20;
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.scale(scale, scale);
+
+    ctx.save();
+
+    roundRectPath(ctx, 0, 0, w, h, r);
+    ctx.clip();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
+
+    /* header */
+
+    const headerH = 128;
+
+    ctx.fillStyle = "#111827";
+    ctx.fillRect(0, 0, w, headerH);
+
+    ctx.fillStyle = "#ffffff";
+    roundRectPath(ctx, w / 2 - 29, 24, 58, 58, 16);
+    ctx.fill();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "900 17px Arial, Helvetica, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("CMK", w / 2, 24 + 29);
+
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 19px Arial, Helvetica, sans-serif";
+    ctx.fillText(CONFIG.TICKET_EVENT, w / 2, 104, w - 44);
+
+    ctx.globalAlpha = 0.78;
+    ctx.font = "13px Arial, Helvetica, sans-serif";
+    ctx.fillText("Premium Access Ticket", w / 2, 121);
+    ctx.globalAlpha = 1;
+
+    let y = headerH + 30;
+
+    /* success icon */
+
+    ctx.fillStyle = "#ecfdf3";
+    ctx.beginPath();
+    ctx.arc(w / 2, y + 30, 30, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#027a48";
+    ctx.font = "900 26px Arial, Helvetica, sans-serif";
+    ctx.textBaseline = "middle";
+    ctx.fillText("✓", w / 2, y + 32);
+    ctx.textBaseline = "alphabetic";
+
+    y += 78;
+
+    ctx.fillStyle = "#17202a";
+    ctx.font = "700 19px Arial, Helvetica, sans-serif";
+    ctx.fillText("Payment Confirmed", w / 2, y);
+
+    y += 34;
+
+    /* dashed info box */
+
+    const infoTop = y;
+
+    const rows = [
+        ["Customer", data.name],
+        ["Mobile", data.phone],
+        ["Amount", "K5.00"],
+        ["Purchased", data.purchaseDate],
+        ["Premium until", data.expiresAt]
+    ];
+
+    const rowH = 34;
+    const infoH = rows.length * rowH + 16;
+
+    ctx.strokeStyle = "#d0d5dd";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+
+    ctx.beginPath();
+    ctx.moveTo(24, infoTop);
+    ctx.lineTo(w - 24, infoTop);
+    ctx.moveTo(24, infoTop + infoH);
+    ctx.lineTo(w - 24, infoTop + infoH);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    let rowY = infoTop + 26;
+
+    rows.forEach(([label, value]) => {
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#667085";
+        ctx.font = "14px Arial, Helvetica, sans-serif";
+        ctx.fillText(label, 24, rowY);
+
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#17202a";
+        ctx.font = "700 14px Arial, Helvetica, sans-serif";
+        ctx.fillText(
+            truncateToWidth(ctx, String(value), w - 48 - 100),
+            w - 24,
+            rowY
+        );
+
+        rowY += rowH;
+
+    });
+
+    ctx.textAlign = "center";
+
+    y = infoTop + infoH + 26;
+
+    /* ticket number / QR box */
+
+    const boxH = qrImg ? 196 : 78;
+
+    ctx.fillStyle = "#f8fafc";
+    roundRectPath(ctx, 24, y, w - 48, boxH, 12);
+    ctx.fill();
+
+    ctx.fillStyle = "#667085";
+    ctx.font = "11px Arial, Helvetica, sans-serif";
+    ctx.fillText("TICKET / REFERENCE NUMBER", w / 2, y + 22);
+
+    if (qrImg) {
+
+        const qrSize = 132;
+
+        ctx.drawImage(
+            qrImg,
+            w / 2 - qrSize / 2,
+            y + 32,
+            qrSize,
+            qrSize
+        );
+
+        ctx.fillStyle = "#17202a";
+        ctx.font = "700 14px Arial, Helvetica, sans-serif";
+        ctx.fillText(data.referenceId, w / 2, y + boxH - 14, w - 60);
+
+    } else {
+
+        ctx.fillStyle = "#17202a";
+        ctx.font = "700 17px Arial, Helvetica, sans-serif";
+        ctx.fillText(data.referenceId, w / 2, y + 48, w - 60);
+
+    }
+
+    y += boxH + 22;
+
+    /* notice */
+
+    const noticeFont = "12px Arial, Helvetica, sans-serif";
+    const noticeLines = wrapText(
+        ctx,
+        "This ticket was generated automatically after successful payment simulation.",
+        w - 72,
+        noticeFont
+    );
+
+    const noticeH = noticeLines.length * 17 + 24;
+
+    ctx.fillStyle = "#fffaeb";
+    roundRectPath(ctx, 24, y, w - 48, noticeH, 10);
+    ctx.fill();
+
+    ctx.fillStyle = "#b54708";
+    ctx.font = noticeFont;
+
+    noticeLines.forEach((line, i) => {
+        ctx.fillText(line, w / 2, y + 20 + i * 17);
+    });
+
+    /* footer */
+
+    ctx.fillStyle = "#98a2b3";
+    ctx.font = "11px Arial, Helvetica, sans-serif";
+    ctx.fillText("CMK Web Solutions", w / 2, h - 32);
+    ctx.fillText("Premium Access", w / 2, h - 18);
+
+    ctx.restore();
+
+    canvas.toBlob((blob) => {
+
+        if (!blob) {
+            return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "CMK-Premium-Ticket-" + data.referenceId + ".png";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    }, "image/png");
+
+}
+
+
+function roundRectPath(ctx, x, y, w, h, r) {
+
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+
+}
+
+
+function truncateToWidth(ctx, text, maxWidth) {
+
+    if (ctx.measureText(text).width <= maxWidth) {
+        return text;
+    }
+
+    let truncated = text;
+
+    while (
+        truncated.length > 1 &&
+        ctx.measureText(truncated + "…").width > maxWidth
+    ) {
+        truncated = truncated.slice(0, -1);
+    }
+
+    return truncated + "…";
+
+}
+
+
+function wrapText(ctx, text, maxWidth, font) {
+
+    ctx.font = font;
+
+    const words = text.split(" ");
+    const lines = [];
+
+    let line = "";
+
+    words.forEach((word) => {
+
+        const test = line ? line + " " + word : word;
+
+        if (ctx.measureText(test).width > maxWidth && line) {
+            lines.push(line);
+            line = word;
+        } else {
+            line = test;
+        }
+
+    });
+
+    if (line) {
+        lines.push(line);
+    }
+
+    return lines;
+
+}
+
+
+/* --------------------------------
+   RESULT SCREEN
+-------------------------------- */
+
+function showResult({
+    type,
+    icon,
+    title,
+    message,
+    referenceId,
+    retry
+}) {
+
+    checkoutContent.classList.add(
+        "hidden"
+    );
+
+    resultScreen.classList.remove(
+        "hidden"
+    );
+
+    resultIcon.className =
+        "result-icon " + type;
+
+    resultIcon.textContent =
+        icon;
+
+    resultTitle.textContent =
+        title;
+
+    resultMessage.textContent =
+        message;
+
+
+    if (referenceId) {
+
+        resultReference.textContent =
+            "Reference: " + referenceId;
+
+        resultReference.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        resultReference.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    retryPaymentBtn.classList.toggle(
+        "hidden",
+        !retry
+    );
+
+
+    checkoutCard.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+/* --------------------------------
+   PREMIUM ACCESS
+-------------------------------- */
+
+function activatePremium() {
+
+    const expiresAt =
+        Date.now() +
+        CONFIG.PREMIUM_MS;
+
+
+    premiumBlock.classList.remove(
+        "locked"
+    );
+
+    premiumBlock.classList.add(
+        "unlocked"
+    );
+
+
+    premiumBadge.classList.add(
+        "visible"
+    );
+
+
+    updateCountdown(
+        expiresAt
+    );
+
+
+    if (countdownTimer) {
+        clearInterval(countdownTimer);
+    }
+
+
+    if (premiumTimer) {
+        clearTimeout(premiumTimer);
+    }
+
+
+    countdownTimer =
+        setInterval(() => {
+
+            updateCountdown(
+                expiresAt
+            );
+
+        }, 1000);
+
+
+    premiumTimer =
+        setTimeout(() => {
+
+            lockPremium();
+
+        }, CONFIG.PREMIUM_MS);
+
+}
+
+
+function updateCountdown(expiresAt) {
+
+    const remaining =
+        Math.max(
+            0,
+            expiresAt - Date.now()
+        );
+
+
+    if (remaining <= 0) {
+
+        lockPremium();
+
+        return;
+    }
+
+
+    countdownEl.textContent =
+        formatCountdown(
+            remaining
+        );
+
+}
+
+
+function lockPremium() {
+
+    if (countdownTimer) {
+
+        clearInterval(
+            countdownTimer
+        );
+
+        countdownTimer = null;
+
+    }
+
+
+    if (premiumTimer) {
+
+        clearTimeout(
+            premiumTimer
+        );
+
+        premiumTimer = null;
+
+    }
+
+
+    premiumBlock.classList.remove(
+        "unlocked"
+    );
+
+    premiumBlock.classList.add(
+        "locked"
+    );
+
+    premiumBadge.classList.remove(
+        "visible"
+    );
+
+}
+
+
+/* --------------------------------
+   BUTTON STATE
+-------------------------------- */
+
+function setSubmitting(value) {
+
+    isSubmitting =
+        Boolean(value);
+
+
+    payButton.disabled =
+        isSubmitting;
+
+    nameInput.disabled =
+        isSubmitting;
+
+    phoneInput.disabled =
+        isSubmitting;
+
+
+    if (isSubmitting) {
+
+        payButton.innerHTML =
+            '<span class="spinner" aria-hidden="true"></span>' +
+            'Processing...';
+
+    } else {
+
+        payButton.textContent =
+            "Pay K5.00";
+
+    }
+
+}
+
+
+/* --------------------------------
+   STATUS
+-------------------------------- */
+
+function showStatus(type, message) {
+
+    statusBox.className =
+        "status " + type;
+
+    statusBox.replaceChildren();
+
+
+    if (type === "loading") {
+
+        const spinner =
+            document.createElement("span");
+
+        spinner.className =
+            "spinner";
+
+        spinner.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        statusBox.appendChild(
+            spinner
+        );
+
+    }
+
+
+    statusBox.appendChild(
+        document.createTextNode(
+            message
+        )
+    );
+
+}
+
+
+function clearStatus() {
+
+    statusBox.className =
+        "status";
+
+    statusBox.textContent =
+        "";
+
+}
+
+
+/* --------------------------------
+   PHONE VALIDATION
+-------------------------------- */
+
+function normalizeZambianPhone(value) {
+
+    let digits =
+        String(value || "")
+            .replace(/\D/g, "");
+
+
+    if (digits.startsWith("260")) {
+
+        digits =
+            digits.substring(3);
+
+    }
+
+
+    if (
+        digits.startsWith("0") &&
+        digits.length === 10
+    ) {
+
+        digits =
+            digits.substring(1);
+
+    }
+
+
+    if (digits.length !== 9) {
+
+        return null;
+
+    }
+
+
+    if (!/^[79]\d{8}$/.test(digits)) {
+
+        return null;
+
+    }
+
+
+    return "+260" + digits;
+
+}
+
+
+/* --------------------------------
+   HELPERS
+-------------------------------- */
+
+function wait(milliseconds) {
+
+    return new Promise(resolve => {
+
+        setTimeout(
+            resolve,
+            milliseconds
+        );
+
+    });
+
+}
+
+
+function formatMoney(amount) {
+
+    return (
+        "K" +
+        Number(amount).toFixed(2)
+    );
+
+}
+
+
+function formatCountdown(milliseconds) {
+
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.ceil(
+                milliseconds / 1000
+            )
+        );
+
+
+    const minutes =
+        Math.floor(
+            totalSeconds / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    return (
+        minutes +
+        ":" +
+        String(seconds).padStart(2, "0")
+    );
+
+}
+
+</script>
+
 </body>
 </html>
